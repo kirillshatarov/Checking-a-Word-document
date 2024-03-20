@@ -1,23 +1,15 @@
-import sys
 import json
+import sys
+
 import docx
-from docx import Document
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import (QApplication, QLabel, QMainWindow, QPushButton, QComboBox, QLineEdit, QVBoxLayout,
-                             QWidget, QScrollArea, QMenuBar, QStatusBar, QPlainTextEdit, QMessageBox, QFileDialog)
+from PyQt5.QtWidgets import (QApplication, QLabel, QPushButton, QComboBox, QLineEdit, QVBoxLayout,
+                             QWidget, QScrollArea, QPlainTextEdit, QMessageBox, QFileDialog)
 
-from secondWindow import SecondWindow
-from file_reader import FileReader
-import cfg as c
+from constants import READ_ONLY, SETTER
 from docx_cls import FileManger
-from constants import READ_ONLY, TITLE, SETTER, GOST
-
-
-# from checkTitle import checkTitles
-# from checkIndent import checkIndents
-# from checkSetter import checkSetters
-# from checkLineSpace import checkLineSpaces
+from secondWindow import SecondWindow
 
 
 class MainWindow(QWidget):
