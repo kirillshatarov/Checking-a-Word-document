@@ -1,0 +1,17 @@
+{
+  "name": "2.105-2019",
+  "font-style": [
+    "Times New Roman",
+    "Arial"
+  ],
+  "font-size": "14",
+  "paragraph-indent": [
+    "1.25",
+    "1.7"
+  ],
+  "interval": [
+    "1.5",
+    "2"
+  ],
+  "alignment": "по ширине"
+}
