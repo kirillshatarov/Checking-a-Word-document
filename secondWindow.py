@@ -1,17 +1,13 @@
-import json
 from PyQt5 import QtCore, QtGui
 import docx
-from docx import Document
-from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import (QApplication, QToolBar, QFileDialog, QLabel, QMainWindow, QPlainTextEdit, QVBoxLayout,
+from PyQt5.QtWidgets import (QApplication, QFileDialog, QLabel, QMainWindow, QPlainTextEdit, QVBoxLayout,
                              QWidget, QMessageBox, QPushButton, QComboBox, QScrollArea)
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 
-from ml import Ui_MainWindow
-from file_reader import FileReader
 import cfg as c
+from constants import READ_ONLY
 from docx_cls import FileManger
-from constants import READ_ONLY, TITLE, SETTER, GOST
+from file_reader import FileReader
+
 
 # from checkTitle import checkTitles
 # from checkIndent import checkIndents
@@ -19,7 +15,7 @@ from constants import READ_ONLY, TITLE, SETTER, GOST
 # from checkLineSpace import checkLineSpaces
 
 
-GOST_FILE = "GOSTs.json"
+# GOST_FILE = "GOSTs.json"
 
 
 class SecondWindow(QMainWindow):

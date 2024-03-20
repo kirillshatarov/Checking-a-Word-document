@@ -1,40 +1,5 @@
 from docx import Document
 
-
-# def check_font_size(document, target_font_size):
-#     for i, paragraph in enumerate(document.paragraphs):
-#         for run in paragraph.runs:
-#             if paragraph.style.font.size and paragraph.style.font.size != target_font_size:
-#                 print(paragraph.style.font.size.pt)
-#                 print(f"Несоответствие размера шрифта в абзаце: '{i}'")
-#
-#
-# def check_font_style(document, target_font_style):
-#     for i, paragraph in enumerate(document.paragraphs):
-#         for run in paragraph.runs:
-#             if run.font.name != target_font_style:
-#                 print(f"Несоответствие стиля шрифта в абзаце: '{i}'")
-#
-#
-# # Пример использования:
-# if __name__ == "__main__":
-#     # Замените путь к вашему документу
-#     doc_path = "test.docx"
-#
-#     # Загрузка документа
-#     doc = Document(doc_path)
-#
-#     # Проверка соответствия размера шрифта
-#     target_font_size = 14
-#     print(f"Проверка соответствия размера шрифта {target_font_size}...")
-#     check_font_size(doc, target_font_size)
-#
-#     # Проверка соответствия стиля шрифта
-#     target_font_style = "Times New Roman"
-#     print(f"Проверка соответствия стиля шрифта {target_font_style}...")
-#     check_font_style(doc, target_font_style)
-
-
 def check_font_properties(docx_file):
     doc = Document(docx_file)
 
