@@ -318,9 +318,9 @@ class MainWindow(QWidget):
     def changeLineSpaceLabel(self, text):
         self.enterLineSpaceLabel.setText(text + ' см')
 
-    def choiceTitleActive(self, index):
-        self.titlePicked.setText(self.choiceTitle.itemText(index))
-        self.currentTitle = self.titlePicked
+    # def choiceTitleActive(self, index):
+    #     self.titlePicked.setText(self.choiceTitle.itemText(index))
+    #     self.currentTitle = self.titlePicked
 
     def choiceAlignActive(self, index):
         self.pickAlignmentLabel.setText(self.pickAligment.itemText(index))

@@ -1,5 +1,5 @@
-from PyQt5 import QtCore, QtGui
 import docx
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import (QApplication, QFileDialog, QLabel, QMainWindow, QPlainTextEdit, QVBoxLayout,
                              QWidget, QMessageBox, QPushButton, QComboBox, QScrollArea)
 
@@ -7,12 +7,6 @@ import cfg as c
 from constants import READ_ONLY
 from docx_cls import FileManger
 from file_reader import FileReader
-
-
-# from checkTitle import checkTitles
-# from checkIndent import checkIndents
-# from checkSetter import checkSetters
-# from checkLineSpace import checkLineSpaces
 
 
 # GOST_FILE = "GOSTs.json"
