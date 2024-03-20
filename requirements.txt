@@ -1,0 +1,5 @@
+PyQt5==5.15.9
+constants==0.6.0
+docx==0.2.4
+python-docx==1.1.0
+bayoo-docx==0.2.20
