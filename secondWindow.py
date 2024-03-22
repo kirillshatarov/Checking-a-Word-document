@@ -1,5 +1,6 @@
 import docx
 from PyQt5 import QtCore, QtGui
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import (QApplication, QFileDialog, QLabel, QMainWindow, QPlainTextEdit, QVBoxLayout,
                              QWidget, QMessageBox, QPushButton, QComboBox, QScrollArea)
 
