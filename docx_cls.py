@@ -1,9 +1,8 @@
-import os
 import docx
 from PyQt5.QtWidgets import QFileDialog
+
 import cfg as c
 from file_reader import FileReader
-from docx.shared import Pt
 
 
 def painter(paragraph: docx, errors: list[tuple]):
@@ -145,6 +144,7 @@ class FileManger:
                         font_size = paragraph.style.font.size
                         print("1", font_size)
                         print("1 - Размер шрифта")
+                        print('run.font.size - ', run.font.size)
                         if run.font.size is not None:
                             if run.font.size.pt != self.fsize:
                                 font_size = run.font.size.pt
@@ -154,28 +154,33 @@ class FileManger:
                                     if not (left <= font_size <= right):
                                         comment = c.exceptions['font-size'] + '-'.join(self.fsize)
                                         par_errors.append(('pink', comment))
+                                        break
                                 else:
                                     if font_size != float(self.fsize):
                                         comment = c.exceptions['font-size'] + str(self.fsize)
                                         par_errors.append(('pink', comment))
+                                        break
                                 print("2 - Размер шрифта")
 
                     # Стиль шрифта
                     for run in paragraph.runs:
                         font_style = paragraph.style.font.name
                         print("3", font_style)
-                        print("1 - Стиль шрифта")
+                        print("1 - Стиль шрифта", run.font.name)
                         if run.font.name is not None:
                             if run.font.name != self.fname:
                                 font_style = run.font.name
+                                print("3", font_style)
                                 if isinstance(self.fname, list):
                                     if font_style not in self.fname:
                                         comment = c.exceptions['font-style'] + '-'.join(self.fname)
                                         par_errors.append(('red', comment))
+                                        break
                                 else:
                                     if font_style not in self.fname:
                                         comment = c.exceptions['font-style'] + str(self.fname)
                                         par_errors.append(('red', comment))
+                                        break
 
                                 print("2 - Стиль шрифта")
 
