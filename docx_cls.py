@@ -160,7 +160,7 @@ class FileManger:
                                         comment = c.exceptions['font-size'] + str(self.fsize)
                                         par_errors.append(('pink', comment))
                                         break
-                                print("2 - Размер шрифта")
+                                # print("2 - Размер шрифта")
 
                     # Стиль шрифта
                     for run in paragraph.runs:
@@ -182,20 +182,20 @@ class FileManger:
                                         par_errors.append(('red', comment))
                                         break
 
-                                print("2 - Стиль шрифта")
+                                # print("2 - Стиль шрифта")
 
                     # Выравнивание
                     alignment = paragraph.alignment
-                    print("1 - Выравнивание")
+                    # print("1 - Выравнивание")
                     if alignment:
                         if alignment != self.alignment:
                             comment = c.exceptions['alignment'] + str(self.alignment)
                             par_errors.append(('green', comment))
-                        print("2 - Выравнивание")
+                        # print("2 - Выравнивание")
 
                     # Межстрочный интервал
                     interval = paragraph.paragraph_format.line_spacing
-                    print("1 - Межстрочный интервал")
+                    # print("1 - Межстрочный интервал")
                     if interval:
                         if isinstance(self.interval, list):
                             left, right = map(float, self.indent)
@@ -207,10 +207,10 @@ class FileManger:
                             if interval != self.interval:
                                 comment = c.exceptions['line_spacing'] + str(self.interval)
                                 par_errors.append(('yellow', comment))
-                        print("2 - Межстрочный интервал")
+                        # print("2 - Межстрочный интервал")
 
                     # абзацы скипаем
-                    print("1 - Отступ")
+                    # print("1 - Отступ")
                     if paragraph.paragraph_format.first_line_indent is not None:
                         # Отступ
                         doc_indent = round(paragraph.paragraph_format.first_line_indent.cm, 2)
@@ -223,7 +223,7 @@ class FileManger:
                             if doc_indent != float(self.indent):
                                 comment = c.exceptions['indent'] + str(self.indent)
                                 par_errors.append(('blue', comment))
-                        print("2 - Отступ")
+                        # print("2 - Отступ")
 
                     print("1 - par_errors: ", par_errors)
                     if par_errors:
