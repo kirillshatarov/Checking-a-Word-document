@@ -1,8 +1,10 @@
+import sys
+
 import docx
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore
 from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import (QApplication, QFileDialog, QLabel, QMainWindow, QPlainTextEdit, QVBoxLayout,
-                             QWidget, QMessageBox, QPushButton, QComboBox, QScrollArea)
+from PyQt5.QtWidgets import (QApplication, QFileDialog, QLabel, QPlainTextEdit, QWidget, QMessageBox, QPushButton,
+                             QComboBox, QScrollArea, QGridLayout)
 
 import cfg as c
 from constants import READ_ONLY
@@ -13,171 +15,316 @@ from file_reader import FileReader
 # GOST_FILE = "GOSTs.json"
 
 
-class SecondWindow(QMainWindow):
-    def __init__(self, MainClass):
+class SecondWindow(QWidget):
+    def __init__(self, main_window):
         super().__init__()
 
         #   Начальные значения
-        # self.gost = None
         self.pathFile = ''
-        # self.paragraph_indent = ''
-        # self.alignment = ''
         self.plain_text = None
-        self.MainClass = MainClass
-        # self.showMaximized()  # Полноэкранный режим
+        self.main_window = main_window
+        self.setWindowTitle("Проверка файла")
+        self.setGeometry(200, 40, 1440, 1024)
+        self.setMaximumSize(QSize(1940, 990))
+        self.setMinimumSize(QSize(1024, 700))
 
-        self.setWindowTitle("Проверка по ГОСТам")
-        self.setGeometry(100, 100, 700, 700)
-        self.setMinimumSize(QSize(650, 700))
+        self.initUI()
 
+    def initUI(self):
+        # Виджеты (элементы)
         self.title = QLabel("Проверка файла по ГОСТам", self)
-        self.title.setGeometry(QtCore.QRect(150, 20, 400, 30))
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        font.setBold(True)
-        font.setWeight(75)
-        self.title.setFont(font)
         # self.title.setAlignment(QtCore.Qt.AlignCenter)
+        self.title.setStyleSheet('''
+                                QLabel {
+                                          font-size: 29px;
+                                          font-weight: 700;
+                                          font-family: 'Aleo';
+                                          color: #FFFFFF;
+                                          width: 30%; height: 60%;
+                                          padding: 0px 20px 0px 0px;
+                                        }
+                                    ''')
 
-        labelGost = QLabel("Выберите ГОСТ", self)
-        labelGost.setGeometry(30, 60, 200, 30)
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        font.setBold(True)
-        font.setWeight(75)
-        labelGost.setFont(font)
+        # Кнопка открытия главного окна со своими настройками
+        self.mainWindow_button = QPushButton("Проверить по своим параметрам", self)
+        self.mainWindow_button.setMinimumSize(360, 80)
+        self.mainWindow_button.setStyleSheet('''
+                                QPushButton {
+                                              font-weight: 700;
+                                              background-color: #E9E9E9;
+                                              font-family: 'Aleo';
+                                              font-size: 20px;
+                                              color: #000000;
+                                              width: 50%; height: 70%;
+                                              padding: 0px 10px 0px 10px
+                                            }
+                                    ''')
+
+        self.labelGost = QLabel("Выберите ГОСТ", self)
+        self.labelGost.setStyleSheet('''
+                                    QLabel {
+                                            font-size: 20px;
+                                            font-family: 'Aleo';
+                                            color: #F4F2F2;
+                                            margin: 30px 30px 0px 0px;
+                                            padding: 30px 0 10px 1px;
+                                            }
+                                        ''')
 
         self.gostPicked = QLabel(self)
-        self.gostPicked.setGeometry(220, 60, 180, 30)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.gostPicked.setFont(font)
-        # self.gostPicked.setAlignment(QtCore.Qt.AlignCenter)
+        self.gostPicked.setVisible(False)
+        self.gostPicked.setStyleSheet('''
+                                    QLabel {
+                                                font-size: 20px;
+                                                font-family: 'Aleo';
+                                                color: #F4F2F2;
+                                            }
+                                        ''')
 
         self.choiceGost = QComboBox(self)
-        self.choiceGost.setGeometry(30, 90, 180, 31)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.choiceGost.setFont(font)
         self.gost_keys = list(FileReader.get_files().keys())
         # self.gost_data = FileReader.read_file()    # Загрузка данных из JSON файла с использованием функции
         # self.gost_keys = list(self.gost_data.keys())   # Получение списка ключей
         self.choiceGost.addItems(self.gost_keys)  # Добавление ключей в QComboBox
+        self.choiceGost.setStyleSheet('''
+                     QComboBox {
+                                    font-size: 20px;
+                                    font-weight: 400;
+                                    font-family: 'Aleo';
+                                    color: #000000;
+                                    background-color: #FFFFFF;
+                                    margin: 0px 30px 0px 0px;
+                                    border: 2px solid transparent; /* Прозрачная рамка */
+                                    border-radius: 6px;
+                                    padding: 0px 0px 0px 10px; /* Внутренний отступ */
+                                    width: 30%; height: 60%;
+                                }
+           QComboBox::drop-down {
+                                    subcontrol-position: right;
+                                    width: 25%;
+                                    /*padding: 1px;*/
+                                }
+    QComboBox QAbstractItemView {
+                                    font-size: 20px;
+                                    font-weight: 400;
+                                    font-family: 'Aleo';
+                                    color: #000000;
+                                    background-color: #FFFFFF;
+                                    margin: 0px 30px 0px 0px;
+                                    selection-background-color: #C0C0C0; /* Цвет фона при наведении на элемент списка */
+                                    selection-color: #000000; /* Цвет текста при наведении на элемент списка */
+                                    /*padding: 30px 5px;*/
+                                }
+    QComboBox QAbstractItemView::item {
+                                    padding: 30px 30px;
+                                }
+                            ''')
 
         # Вывод параметров гостов
         self.fontStyleLabel = QLabel("Шрифт:", self)
-        self.fontStyleLabel.setGeometry(30, 130, 400, 30)
-        font.setPointSize(10)
-        font.setBold(False)
-        self.fontStyleLabel.setFont(font)
+        self.fontStyleLabel.setStyleSheet('''
+                                          QLabel {
+                                                  font-size: 20px;
+                                                  font-weight: 400;
+                                                  font-family: 'Aleo';
+                                                  color: #F4F2F2;
+                                                  /* border: 1px solid red; */
+                                                  margin: 0px 30px 0px 30px;
+                                                  padding: 36px 0px 36px 0px;
+                                                }
+                                            ''')
 
         self.fontSizeLabel = QLabel("Размер шрифта:", self)
-        self.fontSizeLabel.setGeometry(30, 160, 400, 30)
-        font.setPointSize(10)
-        font.setBold(False)
-        self.fontSizeLabel.setFont(font)
+        self.fontSizeLabel.setStyleSheet('''
+                                          QLabel {
+                                                  font-size: 20px;
+                                                  font-weight: 400;
+                                                  font-family: 'Aleo';
+                                                  color: #F4F2F2;
+                                                  /* border: 1px solid red; */
+                                                  margin: 0px 30px 0px 30px;
+                                                  
+                                                }
+                                            ''')
 
         self.paragraphIndentLabel = QLabel("Абзацный отступ:", self)
-        self.paragraphIndentLabel.setGeometry(30, 190, 400, 30)
-        font.setPointSize(10)
-        font.setBold(False)
-        self.paragraphIndentLabel.setFont(font)
+        self.paragraphIndentLabel.setStyleSheet('''
+                                          QLabel {
+                                                  font-size: 20px;
+                                                  font-weight: 400;
+                                                  font-family: 'Aleo';
+                                                  color: #F4F2F2;
+                                                  /* border: 1px solid red; */
+                                                  margin: 0px 30px 0px 30px;
+                                                }
+                                            ''')
 
         self.intervalLabel = QLabel("Межстрочный интервал:", self)
-        self.intervalLabel.setGeometry(30, 220, 400, 30)
-        font.setPointSize(10)
-        font.setBold(False)
-        self.intervalLabel.setFont(font)
+        self.intervalLabel.setStyleSheet('''
+                                          QLabel {
+                                                  font-size: 20px;
+                                                  font-weight: 400;
+                                                  font-family: 'Aleo';
+                                                  color: #F4F2F2;
+                                                  /* border: 1px solid red; */
+                                                  margin: 0px 30px 0px 30px;
+                                                }
+                                            ''')
 
         self.alignmentLabel = QLabel("Выравнивание:", self)
-        self.alignmentLabel.setGeometry(30, 250, 400, 30)
-        font.setPointSize(10)
-        font.setBold(False)
-        self.alignmentLabel.setFont(font)
+        self.alignmentLabel.setStyleSheet('''
+                                          QLabel {
+                                                  font-size: 20px;
+                                                  font-weight: 400;
+                                                  font-family: 'Aleo';
+                                                  color: #F4F2F2;
+                                                  /* border: 1px solid red; */
+                                                  margin: 0px 30px 0px 30px;
+                                                }
+                                            ''')
 
         # Кнопка выбора файла
-        self.pickFileButton = QPushButton("Выбрать файл", self)
-        self.pickFileButton.setGeometry(30, 300, 161, 41)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.pickFileButton.setFont(font)
+        self.pickFileButton = QPushButton("Выбрать файл (docx)", self)
+        self.pickFileButton.setMinimumSize(600, 70)
+        self.pickFileButton.setAcceptDrops(True)
+        self.pickFileButton.setStyleSheet('''
+                            QPushButton {
+                                          font-weight: 400;
+                                          font-family: 'Aleo';
+                                          font-size: 20px;
+                                          color: #FFFFFF;
+                                          text-align: center;
+                                          border: 3px solid #FFFFFF;
+                                          border-radius: 36px;
+                                          padding: 10px 30px;
+                                          margin: 55px 170px 0px 170px;
+                                          width: 30%; height: 50%;
+                                    }
+                                ''')
 
         self.filePicked = QLabel("", self)
-        self.filePicked.setGeometry(220, 305, 700, 31)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.filePicked.setFont(font)
-        # self.filePicked.setAlignment(QtCore.Qt.AlignCenter)
+        self.filePicked.setStyleSheet('''
+                                          QLabel {
+                                                  font-size: 20px;
+                                                  font-weight: 400;
+                                                  font-family: 'Aleo';
+                                                  color: #F4F2F2;
+                                                }
+                                            ''')
+        self.filePicked.setAlignment(QtCore.Qt.AlignCenter)
 
         self.checkFile = QPushButton("Проверить файл", self)
-        self.checkFile.setGeometry(30, 350, 280, 35)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.checkFile.setFont(font)
-
-        self.downloadFile = QPushButton("Скачать проверенный файл", self)
-        self.downloadFile.setGeometry(30, 630, 280, 35)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.downloadFile.setFont(font)
+        self.checkFile.setMinimumSize(600, 80)
+        self.checkFile.setStyleSheet('''
+                        QPushButton {
+                                      font-weight: 400;
+                                      font-family: 'Aleo';
+                                      font-size: 20px;
+                                      color: #FFFFFF;
+                                      text-align: center;
+                                      border: 3px solid #FFFFFF;
+                                      border-radius: 36px;
+                                      padding: 10px 30px;
+                                      margin: 30px 170px 35px 170px;
+                                      width: 30%; height: 50%;
+                                    }
+                                ''')
 
         self.answer = QScrollArea(self)
-        self.answer.setGeometry(20, 400, 550, 200)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.answer.setFont(font)
+        self.answer.setMinimumSize(900, 80)
         self.answer.setWidgetResizable(True)
-        self.answer.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        # self.answer.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.answer.setStyleSheet('''
+                                            QScrollArea {
+                                                    background-color: #FFFFFF;
+                                                    margin-right: 0px;
+                                                    width: 500%;
+                                            }
+                                        ''')
 
         self.plain_text = QPlainTextEdit()
         self.plain_text.setReadOnly(READ_ONLY)
+        self.plain_text.setMinimumSize(300, 80)
+        self.plain_text.setStyleSheet('''
+                                    QPlainTextEdit {
+                                            background-color: #FFFFFF;
+                                            border: 4px solid black;
+                                            border-radius: 50px;
+                                            padding: 25px 10px 25px 40px;
+                                            color: #000000;
+                                            font-size: 20px;
+                                            font-weight: 400;
+                                            margin: 20px 40px;
+                                            width: 500%;
+                                    }
+                                ''')
 
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.plain_text)
+        self.downloadFile = QPushButton("Скачать проверенный\nфайл", self)
+        self.downloadFile.setMinimumSize(350, 80)
+        self.downloadFile.setStyleSheet('''
+                            QPushButton {
+                                            font-weight: 700;
+                                            background-color: #E9E9E9;
+                                            font-family: 'Aleo';
+                                            font-size: 20px;
+                                            color: #000000;
+                                            border: 3px solid #FFFFFF;
+                                            border-radius: 36px;
+                                            margin: 30px 50px 35px 50px;
+                                            padding: 10px 0px;
+                                            width: 70%; height: 50%;
+                                        }
+                                    ''')
 
-        w = QWidget()
-        w.setLayout(layout)
-        self.answer.setWidget(w)
+        # layout = QVBoxLayout(self)
+        # layout.addWidget(self.plain_text)
+        #
+        # w = QWidget()
+        # w.setLayout(layout)
+        # self.answer.setWidget(w)
+        # w.setStyleSheet("background-color: #0074BA;")
 
         #   Обработка событий
-        # self.choiceGost.activated.connect(self.choiceGostActive)
         self.choiceGost.activated.connect(self.get_params_from_ghost)
         self.gostPicked.setText(self.choiceGost.currentText())
         self.pickFileButton.clicked.connect(self.pickFileButton_Clicked)
         self.checkFile.clicked.connect(self.checkFile_Clicked)
         self.downloadFile.clicked.connect(self.save_ready_file)
+        self.mainWindow_button.clicked.connect(self.open_main_window)  # Открытие главного окна со своими настройками
 
-    # def choiceGostActive(self, index):
-    #     selected_gost = self.choiceGost.itemText(index)
-    #     properties = self.gost_data[selected_gost]
-    #
-    #     self.gostPicked.setText(selected_gost)
-    #
-    #     font_style = properties.get("font-style", "")
-    #     font_size = properties.get("font-size", "")
-    #     paragraph_indent = properties.get("paragraph-indent", "")
-    #     interval = properties.get("interval", "")
-    #     alignment = properties.get("alignment", "")
-    #
-    #     self.fontStyleLabel.setText(f"Font Style: {font_style}")
-    #     self.fontSizeLabel.setText(f"Font Size: {font_size}")
-    #     self.paragraphIndentLabel.setText(f"Paragraph Indent: {paragraph_indent}")
-    #     self.intervalLabel.setText(f"Interval: {interval}")
-    #     self.alignmentLabel.setText(f"Alignment: {alignment}")
+        # Подключаем события перетаскивания
+        self.pickFileButton.dragEnterEvent = self.dragEnterEvent
+        self.pickFileButton.dropEvent = self.dropEvent
+        # Добавляем обработку событий перетаскивания файлов
+        self.filePicked.setAcceptDrops(True)
+
+        # ДОБАВЛЕНИЕ ЭЛЕМЕНТОВ В ГРИД #
+        grid = QGridLayout()
+        grid.setSpacing(0)
+        self.setLayout(grid)
+        grid.setContentsMargins(62, 0, 0, 0)
+        grid.setColumnStretch(0, 1)  # Установить вес (stretch) для первого столбца
+        grid.setColumnStretch(1, 1)  # Установить вес для второго столбца
+        grid.setColumnStretch(2, 2)  # Установить вес для третьего столбца
+        self.setStyleSheet("background-color: #0074BA;")
+
+        grid.addWidget(self.title, 0, 0)  # QLabel("Проверка файла по ГОСТам')
+        grid.addWidget(self.mainWindow_button, 0, 2)  # QPushButton("Проверить по своим параметрам")
+        grid.addWidget(self.labelGost, 1, 0)  # QLabel("Выберите ГОСТ")
+        grid.addWidget(self.gostPicked, 1, 1)  # QLabel(self) выбранный гост
+        grid.addWidget(self.choiceGost, 2, 0)  # QComboBox(self)
+        grid.addWidget(self.fontStyleLabel, 2, 1)  # QLabel("Шрифт:")
+        grid.addWidget(self.fontSizeLabel, 3, 1)  # QLabel("Размер шрифта:")
+        grid.addWidget(self.paragraphIndentLabel, 4, 1)  # QLabel("Абзацный отступ:")
+        grid.addWidget(self.intervalLabel, 5, 1)  # QLabel("Межстрочный интервал:")
+        grid.addWidget(self.alignmentLabel, 6, 1)  # QLabel("Выравнивание:")
+        grid.addWidget(self.pickFileButton, 7, 0, 1, 2)  # QPushButton("Выбрать файл")
+        grid.addWidget(self.filePicked, 8, 0, 1, 2)  # QLabel("") выбранный файл
+        grid.addWidget(self.checkFile, 9, 0, 1, 2)  # QPushButton("Проверить файл")
+        grid.addWidget(self.answer, 1, 2, 9, 1)  # QScrollArea(self)
+        grid.addWidget(self.plain_text, 1, 2, 8, 1)  # QPlainTextEdit()
+        grid.addWidget(self.downloadFile, 9, 2, 1, 1)  # QPushButton("Скачать проверенный файл")
+
 
     def get_params_from_ghost(self, index):
         # if self.gost in FileReader.get_files().keys():
@@ -201,6 +348,12 @@ class SecondWindow(QMainWindow):
     #         gost_values = json.load(file)
     #     return gost_values
 
+    def open_main_window(self):
+        from mainWindow import MainWindow
+        self.main_window = MainWindow()
+        self.main_window.show()
+        self.close()
+
     def pickFileButton_Clicked(self):
         filename, filetype = QFileDialog.getOpenFileName(self,
                                                          "Выбрать файл",
@@ -213,38 +366,6 @@ class SecondWindow(QMainWindow):
             self.pathFile = filename
             filename = filename.split('/')[-1]
             self.filePicked.setText(filename)
-
-    # def checkFile_Clicked(self, index):
-    #     if self.pathFile == '':
-    #         try:
-    #             self.notSelectFile = QMessageBox()
-    #             self.notSelectFile.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-    #             self.notSelectFile.setText('Вы не выбрали файл!')
-    #             self.notSelectFile.setWindowTitle('Ошибка!')
-    #             self.notSelectFile.setIcon(QMessageBox.Warning)
-    #             res = self.notSelectFile.exec()
-    #         except Exception as e:
-    #             pass
-    #     else:
-    #         # if self.ui.enterIndent.text() == '':
-    #         #     self.ui.enterIndent.setText('0')
-    #         selected_gost = self.choiceGost.itemText(index)
-    #         properties = self.gost_data[selected_gost]
-    #
-    #         # self.gostPicked.setText(selected_gost)
-    #
-    #         font_style = properties.get("font-style", "")
-    #         font_size = properties.get("font-size", "")
-    #         paragraph_indent = properties.get("paragraph-indent", "")
-    #         interval = properties.get("interval", "")
-    #         alignment = properties.get("alignment", "")
-    #         document = Document(self.pathFile)
-    #         text = checkIndents(paragraph_indent, document)
-    #         text += checkSetters(alignment, document)
-    #         text += checkLineSpaces(interval, document)
-    #         # text += checkTitles(self.currentTitle.text(), document)
-    #         document.save(self.pathFile)
-    #         self.plain_text.setPlainText(text)
 
     def checkFile_Clicked(self):
         print(self.pathFile)
@@ -276,19 +397,33 @@ class SecondWindow(QMainWindow):
         obj2 = FileManger(docx.Document(self.path), gost=self.selected_gost, doc_rej=True)
         obj2.is_correct_document()
 
+    def dragEnterEvent(self, event):
+        mime_data = event.mimeData()
+        if mime_data.hasUrls() and mime_data.urls()[0].isLocalFile():
+            event.acceptProposedAction()
 
-# Убрать потом
+    def dropEvent(self, event):
+        mime_data = event.mimeData()
+        if mime_data.hasUrls() and mime_data.urls()[0].isLocalFile():
+            file_path = mime_data.urls()[0].toLocalFile()
+            filename = file_path.split('/')[-1]
+            # filename = file_path
+            self.filePicked.setText(filename)
+            self.pathFile = file_path
+            event.acceptProposedAction()
+
+
+
 if __name__ == '__main__':
-    app = QApplication([])
+    app = QApplication(sys.argv)
     window = SecondWindow(None)
-    # window = SecondWindow(None)
     window.show()
-    app.exec_()
+    sys.exit(app.exec_())
 
-# Оставить
+
 # if __name__ == '__main__':
-#     import sys
-#     app = QApplication(sys.argv)
-#     second_window = SecondWindow(None)
-#     second_window.show()
-#     sys.exit(app.exec_())
+#     app = QApplication([])
+#     window = SecondWindow(None)
+#     # window = SecondWindow(None)
+#     window.show()
+#     app.exec_()
